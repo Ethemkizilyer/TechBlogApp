@@ -16,11 +16,13 @@ namespace BlogApp.Controllers
         private IPostRepository _postRepository;
         private ICommentRepository _commentRepository;
         private ITagRepository _tagRepository;
-        public PostsController(IPostRepository postRepository, ICommentRepository commentRepository, ITagRepository tagRepository)
+        private readonly ILogger<PostsController> _logger;
+        public PostsController(IPostRepository postRepository, ICommentRepository commentRepository, ITagRepository tagRepository, ILogger<PostsController> logger)
         {
             _postRepository = postRepository;
             _commentRepository = commentRepository;
             _tagRepository = tagRepository;
+            _logger = logger;
         }
         public async Task<IActionResult> Index(string tag)
         {
@@ -55,13 +57,12 @@ namespace BlogApp.Controllers
             };
 
             _commentRepository.CreateComment(entity);
-
             return Json(new
             {
                 username,
-                Text,
-                entity.PublishedOn,
-                avatar
+        text = entity.Text,
+        publishedOn = entity.PublishedOn,
+        avatar
             });
         }
 

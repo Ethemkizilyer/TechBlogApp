@@ -40,24 +40,27 @@
                             </div>
                     }
                     </div>
-                    @if(User.Identity!.IsAuthenticated){
-<hr class="my-4">
-                    <div>
-                        <h4 class="mb-3">Yorum Ekle</h4>
-                        <form action="/posts/AddComment" method="post">
-                            <input type="hidden" id="PostId" name="PostId" value="@Model.PostId">
-                            <div class="mb-3">
-                                <label for="Text" class="form-label">Yorum</label>
-                                <textarea type="text" name="Text" id="Text" rows="3" class="form-control"></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <button id="btnYorumKayit" type="submit" class="btn btn-primary">Kaydet</button>
-                            </div>
-                        </form>
-                    </div>
-                    }else{
-                        <p>Yorum yapabilmek için giriş yapınız. <a href="/users/login">Login</a></p>
-                    }
+             @if (User.Identity!.IsAuthenticated)
+{
+    <hr class="my-4">
+    <div>
+        <h4 class="mb-3">Yorum Ekle</h4>
+                        <form id="commentForm" action="/posts/AddComment" method="post">
+            <input type="hidden" id="PostId" name="PostId" value="@Model.PostId">
+            <div class="mb-3">
+                <label for="Text" class="form-label">Yorum</label>
+                <textarea type="text" name="Text" id="Text" rows="3" class="form-control"></textarea>
+            </div>
+            <div class="mb-3">
+                <button id="btnYorumKayit" type="submit" class="btn btn-primary">Kaydet</button>
+            </div>
+        </form>
+    </div>
+}
+else
+{
+    <p>Yorum yapabilmek için giriş yapınız. <a href="/users/login">Login</a></p>
+}
                 </div>
             </div>
         </div>
@@ -69,47 +72,62 @@
 </div>
 
 
-@section Scripts{
+@section Scripts
+{
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script type="text/javascript">
-        $(document).ready(function(){
-            $("#btnYorumKayit").click(function(){
+        $(document).ready(function () {
+            $("#commentForm").submit(function (event) {
+                event.preventDefault();
+
                 $.ajax({
                     type: 'POST',
-                    url: '@Url.Action("AddComment")',
+                    url: '@Url.Action("AddComment", "Posts")',
                     dataType: 'json',
-                    data:{
+                    data: {
                         PostId: $('#PostId').val(),
-                        UserName: $('#UserName').val(),
-                        Text: $('#Text').val(),
+                        Text: $('#Text').val()
                     },
-                    success: function(yorum){
-                        var date = new Date(yorum.publishedOn);
+                    success: function (yorum) {
+                        console.log(yorum)
+                        if (yorum && yorum.username && yorum.text && yorum.publishedOn) {
+                            var date = new Date(yorum.publishedOn);
 
-                        $("#comment").append(`
-                            <div class="my-4 d-flex">
-                            <img src="/img/${yorum.avatar}" class="avatar rounded-circle float-start me-3" alt="">
-                            <div>
-                            <div class="mb-2 d-flex">
-                                <h6 class="me-2">${yorum.UserName}</h6>
-                                <small>${date.toLocaleDateString()}</small>
-                            </div>
-                            <p>${yorum.Text}</p>
-                        </div>
-                            </div>                        
-                        `);
+                            var formattedDate = date.toLocaleString('tr-TR', {
+                                day: '2-digit',
+                                month: '2-digit',
+                                year: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                second: '2-digit'
+                            });
 
-                        $("#UserName").val('');
-                        $("#Text").val('');
+                            $("#comment").append(`
+                                <div class="my-4 d-flex">
+                                    <img src="/img/${yorum.avatar}" class="avatar rounded-circle float-start me-3" alt="">
+                                    <div>
+                                        <div class="mb-2 d-flex">
+                                            <h6 class="me-2">${yorum.username}</h6>
+                                            <small>${formattedDate}</small>
+                                        </div>
+                                        <p>${yorum.text}</p>
+                                    </div>
+                                </div>
+                            `);
 
-                        var adet = parseInt($("#commentCount").text());
-                        $("#commentCount").text(adet+1);
+                            $("#Text").val('');
+
+                            var adet = parseInt($("#commentCount").text());
+                            $("#commentCount").text(adet + 1);
+                        } else {
+                            alert('Yanıtta beklenmedik veri.');
+                        }
+                    },
+                    error: function () {
+                        alert('Yorum eklenirken bir hata oluştu.');
                     }
                 });
-
-                return false;
             });
-
         });
     </script>
 }

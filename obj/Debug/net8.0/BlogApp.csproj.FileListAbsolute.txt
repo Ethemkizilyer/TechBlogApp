@@ -125,3 +125,4 @@ C:\Users\ethem\Desktop\FULLSTACK\BACKEND\BlogApp\obj\Debug\net8.0\refint\BlogApp
 C:\Users\ethem\Desktop\FULLSTACK\BACKEND\BlogApp\obj\Debug\net8.0\BlogApp.pdb
 C:\Users\ethem\Desktop\FULLSTACK\BACKEND\BlogApp\obj\Debug\net8.0\BlogApp.genruntimeconfig.cache
 C:\Users\ethem\Desktop\FULLSTACK\BACKEND\BlogApp\obj\Debug\net8.0\ref\BlogApp.dll
+C:\Users\ethem\Desktop\FULLSTACK\BACKEND\BlogApp\obj\Debug\net8.0\BlogApp.sourcelink.json
