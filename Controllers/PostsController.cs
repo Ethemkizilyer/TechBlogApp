@@ -169,5 +169,22 @@ namespace BlogApp.Controllers
             }
             return View(model);
         }
+    
+        [HttpPost]
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var post = await _postRepository.Posts.FirstOrDefaultAsync(p => p.PostId == id);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            _postRepository.DeletePost(post);
+            return RedirectToAction("List");
+        }
+    
     }
+
 }

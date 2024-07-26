@@ -47,5 +47,10 @@ namespace BlogApp.Data.Concrete{
                 _context.SaveChanges();
             }
         }
+         public void DeletePost(Post post)
+    {
+        _context.Posts.Remove(post);
+        _context.SaveChanges();
+    }
     }
 }
