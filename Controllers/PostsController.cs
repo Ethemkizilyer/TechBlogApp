@@ -16,13 +16,11 @@ namespace BlogApp.Controllers
         private IPostRepository _postRepository;
         private ICommentRepository _commentRepository;
         private ITagRepository _tagRepository;
-        private readonly ILogger<PostsController> _logger;
-        public PostsController(IPostRepository postRepository, ICommentRepository commentRepository, ITagRepository tagRepository, ILogger<PostsController> logger)
+        public PostsController(IPostRepository postRepository, ICommentRepository commentRepository, ITagRepository tagRepository)
         {
             _postRepository = postRepository;
             _commentRepository = commentRepository;
             _tagRepository = tagRepository;
-            _logger = logger;
         }
         public async Task<IActionResult> Index(string tag)
         {
@@ -55,7 +53,7 @@ namespace BlogApp.Controllers
                 PublishedOn = DateTime.Now,
                 UserId = int.Parse(userId ?? "")
             };
-
+            Console.WriteLine(Text);
             _commentRepository.CreateComment(entity);
             return Json(new
             {
